@@ -1,4 +1,6 @@
-# `dropfix`: Advanced Dropbox Ignore Tools
+# `dropfix`
+
+> Advanced Dropbox Ignore Tools
 
 This guide provides detailed methods for configuring Dropbox to ignore specific files and directories using `dropfix`. For basic setup using our scripts, see the [main README](./README.md).
 

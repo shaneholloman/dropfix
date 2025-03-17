@@ -7,9 +7,9 @@
 
 ## Quick Start
 
-- **Windows**: Run `ignore-dropbox-dirs.ps1` in PowerShell
-- **Linux**: Run `ignore-dropbox-dirs.sh` in Bash
-- **macOS**: Run `ignore-dropbox-dirs-mac.sh` in Terminal
+- **Windows**: Run `dropfix-win.ps1` in PowerShell
+- **Linux**: Run `dropfix-nix.sh` in Bash
+- **macOS**: Run `dropfix-mac.sh` in Terminal
 
 ## Why These Tools?
 
