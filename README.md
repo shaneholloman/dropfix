@@ -1,92 +1,74 @@
-# `dropfix`
+# dropfix
 
-> [!TIP]
-> Dropbox Directory Ignore Tools
+[![Release](https://img.shields.io/github/v/release/shaneholloman/dropfix)](https://img.shields.io/github/v/release/shaneholloman/dropfix)
+[![Build status](https://img.shields.io/github/actions/workflow/status/shaneholloman/dropfix/main.yml?branch=main)](https://github.com/shaneholloman/dropfix/actions/workflows/main.yml?query=branch%3Amain)
+[![codecov](https://codecov.io/gh/shaneholloman/dropfix/branch/main/graph/badge.svg)](https://codecov.io/gh/shaneholloman/dropfix)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/shaneholloman/dropfix)](https://img.shields.io/github/commit-activity/m/shaneholloman/dropfix)
+[![License](https://img.shields.io/github/license/shaneholloman/dropfix)](https://img.shields.io/github/license/shaneholloman/dropfix)
 
-`dropfix` helps you configure Dropbox to ignore specific development directories (`.venv`, `.conda`, `node_modules`) that don't need to be synced across machines.
+dropfix helps you configure Dropbox to ignore specific development directories (`.venv`, `.conda`, `node_modules`) that don't need to be synced across machines.
 
-## Quick Start
+- **Github repository**: <https://github.com/shaneholloman/dropfix/>
+- **Documentation** <https://shaneholloman.github.io/dropfix/>
 
-### Platform-Specific Scripts
+## Getting started with your project
 
-- **Windows**: Run `dropfix-win.ps1` in PowerShell
-- **Linux**: Run `dropfix-nix.sh` in Bash
-- **macOS**: Run `dropfix-mac.sh` in Terminal
+### 1. Create a New Repository
 
-### Cross-Platform Python Scripts
+First, create a repository on GitHub with the same name as this project, and then run the following commands:
 
-#### Setting Ignored Directories
+```bash
+git init -b main
+git add .
+git commit -m "init commit"
+git remote add origin git@github.com:shaneholloman/dropfix.git
+git push -u origin main
+```
 
-- **All Platforms**: Run `dropfix.py` with Python 3
+### 2. Set Up Your Development Environment
 
-  ```bash
-  # Basic usage (auto-detects Dropbox path)
-  python3 dropfix.py
+Then, install the environment and the pre-commit hooks with
 
-  # Dry run mode (shows what would happen without making changes)
-  python3 dropfix.py --dry-run
+```bash
+make install
+```
 
-  # Specify custom Dropbox path
-  python3 dropfix.py --path /path/to/your/Dropbox
+This will also generate your `uv.lock` file
 
-  # Ignore specific directories
-  python3 dropfix.py --dirs .venv .cache node_modules
-  ```
+### 3. Run the pre-commit hooks
 
-#### Checking Ignored Status
+Initially, the CI/CD pipeline might be failing due to formatting issues. To resolve those run:
 
-- **All Platforms**: Run `dropfix-check.py` with Python 3
+```bash
+uv run pre-commit run -a
+```
 
-  ```bash
-  # Check which directories are ignored (auto-detects Dropbox path)
-  python3 dropfix-check.py
+### 4. Commit the changes
 
-  # Show only ignored directories
-  python3 dropfix-check.py --show ignored
+Lastly, commit the changes made by the two steps above to your repository.
 
-  # Show only not-ignored directories
-  python3 dropfix-check.py --show not-ignored
+```bash
+git add .
+git commit -m 'Fix formatting issues'
+git push origin main
+```
 
-  # Specify custom directories to check
-  python3 dropfix-check.py --dirs .venv node_modules vendor
-  ```
+You are now ready to start development on your project!
+The CI/CD pipeline will be triggered when you open a pull request, merge to main, or when you create a new release.
 
-## Why These Tools?
+To finalize the set-up for publishing to PyPI, see [here](https://shaneholloman.github.io/uvi/features/publishing/#set-up-for-pypi).
+For activating the automatic documentation with MkDocs, see [here](https://shaneholloman.github.io/uvi/features/mkdocs/#enabling-the-documentation-on-github).
+To enable the code coverage reports, see [here](https://shaneholloman.github.io/uvi/features/codecov/).
 
-- **Save Space**: Avoid syncing large development directories
-- **Improve Performance**: Reduce Dropbox sync operations
-- **Cross-Platform Compatible**: Works across different operating systems
+## Releasing a new version
 
-## Cross-Platform Safety
+- Create an API Token on [PyPI](https://pypi.org/).
+- Add the API Token to your projects secrets with the name `PYPI_TOKEN` by visiting [this page](https://github.com/shaneholloman/dropfix/settings/secrets/actions/new).
+- Create a [new release](https://github.com/shaneholloman/dropfix/releases/new) on Github.
+- Create a new tag in the form `*.*.*`.
 
-These scripts set the same `com.dropbox.ignored` attribute (with value `1`) that Dropbox recognizes across all platforms:
+For more details, see [here](https://shaneholloman.github.io/uvi/features/cicd/#how-to-trigger-a-release).
 
-- Windows uses NTFS alternate data streams
-- macOS uses extended attributes
-- Linux uses file attributes
+---
 
-You can safely use Windows machines, macOS, and Linux with the same Dropbox account without conflicts.
-
-## Advanced Configuration
-
-For additional ways to configure Dropbox ignore patterns, including:
-
-- Using `.dropboxignore` (Business accounts)
-- Setting sync exclusion lists
-- Manual command-line operations
-
-See the [Advanced Dropbox Ignore Tools](./db-ignore.md).
-
-## After Running Scripts
-
-Remember to restart Dropbox for the changes to take effect.
-
-## Note About Paths
-
-These scripts include hardcoded paths (`C:\Users\shane\Dropbox` for Windows and `$HOME/Dropbox` for macOS/Linux) for convenience. Before running, you may need to:
-
-1. Open the script in a text editor
-2. Change the `$dropboxPath` variable to match your Dropbox location
-3. Save the file
-
-The scripts were originally created for personal use, so these paths were hardcoded to bypass additional configuration questions.
+Repository initiated with [shaneholloman/uvi](https://github.com/shaneholloman/uvi).

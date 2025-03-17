@@ -1,26 +1,35 @@
 #!/usr/bin/env python3
-import os
-import sys
-import subprocess
-import platform
-from pathlib import Path
 import argparse
+import os
+import platform
+import subprocess
+import sys
+from pathlib import Path
 
 # ANSI color codes
-CYAN = '\033[0;36m'
-YELLOW = '\033[0;33m'
-GREEN = '\033[0;32m'
-RED = '\033[0;31m'
-GRAY = '\033[0;37m'
-RESET = '\033[0m'  # Reset color
+CYAN = "\033[0;36m"
+YELLOW = "\033[0;33m"
+GREEN = "\033[0;32m"
+RED = "\033[0;31m"
+GRAY = "\033[0;37m"
+RESET = "\033[0m"  # Reset color
+
 
 def main():
     parser = argparse.ArgumentParser(description="Dropfix-Check: Verify directories ignored by Dropbox")
     parser.add_argument("--path", help="Path to Dropbox directory (default: auto-detect)")
-    parser.add_argument("--dirs", nargs="+", default=[".venv", ".conda", "node_modules"],
-                        help="Directory names to check (default: .venv .conda node_modules)")
-    parser.add_argument("--show", choices=["all", "ignored", "not-ignored"], default="all",
-                        help="Filter which directories to show (default: all)")
+    parser.add_argument(
+        "--dirs",
+        nargs="+",
+        default=[".venv", ".conda", "node_modules"],
+        help="Directory names to check (default: .venv .conda node_modules)",
+    )
+    parser.add_argument(
+        "--show",
+        choices=["all", "ignored", "not-ignored"],
+        default="all",
+        help="Filter which directories to show (default: all)",
+    )
     args = parser.parse_args()
 
     # Auto-detect or use provided Dropbox path
@@ -39,19 +48,17 @@ def main():
     check_directories(dropbox_path, args.dirs, args.show)
     return 0
 
+
 def find_dropbox_path():
     """Auto-detect Dropbox path based on common locations"""
     home = Path.home()
-    common_paths = [
-        home / "Dropbox",
-        home / "Documents" / "Dropbox"
-    ]
+    common_paths = [home / "Dropbox", home / "Documents" / "Dropbox"]
 
     # Windows-specific paths
     if platform.system() == "Windows":
         common_paths.extend([
-            Path(os.environ.get('USERPROFILE', '')) / "Dropbox",
-            Path(os.environ.get('HOMEDRIVE', '') + os.environ.get('HOMEPATH', '')) / "Dropbox"
+            Path(os.environ.get("USERPROFILE", "")) / "Dropbox",
+            Path(os.environ.get("HOMEDRIVE", "") + os.environ.get("HOMEPATH", "")) / "Dropbox",
         ])
 
     for path in common_paths:
@@ -59,6 +66,7 @@ def find_dropbox_path():
             return path
 
     return None
+
 
 def check_directories(dropbox_path, dir_names, show_filter="all"):
     """Find directories and check if they're ignored by Dropbox"""
@@ -209,6 +217,7 @@ def check_directories(dropbox_path, dir_names, show_filter="all"):
     if error_count > 0:
         print(f"{RED}Check errors: {error_count}{RESET}")
 
+
 def organize_directories(paths, base_path):
     """Organize directories into a hierarchy of parent-child relationships
 
@@ -258,6 +267,7 @@ def organize_directories(paths, base_path):
 
     return top_level_dirs, nested_counts
 
+
 def check_if_ignored(path, system):
     """Check if a directory is ignored by Dropbox
 
@@ -272,8 +282,14 @@ def check_if_ignored(path, system):
         if system == "Windows":
             # Windows: Check NTFS alternate data streams
             result = subprocess.run(
-                ["powershell", "-Command", f"Get-Content -Path '{path_str}' -Stream com.dropbox.ignored -ErrorAction SilentlyContinue"],
-                capture_output=True, text=True, check=False
+                [
+                    "powershell",
+                    "-Command",
+                    f"Get-Content -Path '{path_str}' -Stream com.dropbox.ignored -ErrorAction SilentlyContinue",
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
             )
             # If command succeeds and value is "1", directory is ignored
             return result.returncode == 0 and result.stdout.strip() == "1"
@@ -281,8 +297,7 @@ def check_if_ignored(path, system):
         elif system == "Darwin":  # macOS
             # macOS: Check extended attributes
             result = subprocess.run(
-                ["xattr", "-p", "com.dropbox.ignored", path_str],
-                capture_output=True, text=True, check=False
+                ["xattr", "-p", "com.dropbox.ignored", path_str], capture_output=True, text=True, check=False
             )
             # If command succeeds and value is "1", directory is ignored
             return result.returncode == 0 and result.stdout.strip() == "1"
@@ -290,8 +305,7 @@ def check_if_ignored(path, system):
         else:  # Linux and others
             # Linux: Check attributes
             result = subprocess.run(
-                ["attr", "-q", "-g", "com.dropbox.ignored", path_str],
-                capture_output=True, text=True, check=False
+                ["attr", "-q", "-g", "com.dropbox.ignored", path_str], capture_output=True, text=True, check=False
             )
             # If command succeeds and value contains "1", directory is ignored
             return result.returncode == 0 and "1" in result.stdout.strip()
@@ -301,6 +315,7 @@ def check_if_ignored(path, system):
 
     return False  # Default: not ignored
 
+
 def progress_bar(current, total, width=50):
     """Display a simple progress bar"""
     percent = current / total
@@ -308,6 +323,7 @@ def progress_bar(current, total, width=50):
     bar = f"{GREEN}{'#' * filled}{GRAY}{'-' * (width - filled)}{RESET}"
     sys.stdout.write(f"\r[{bar}] {CYAN}{percent:.0%}{RESET} ({current}/{total})")
     sys.stdout.flush()
+
 
 if __name__ == "__main__":
     sys.exit(main())
