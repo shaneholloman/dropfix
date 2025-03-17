@@ -9,46 +9,50 @@ dropfix helps you configure Dropbox to ignore specific development directories (
 
 ### Platform-Specific Scripts
 
-- **Windows**: Run `dropfix-win.ps1` in PowerShell
-- **Linux**: Run `dropfix-nix.sh` in Bash
-- **macOS**: Run `dropfix-mac.sh` in Terminal
+Located in the `scripts/` directory:
 
-### Cross-Platform Python Scripts
+- **Windows**: Run `scripts/dropfix-win.ps1` in PowerShell
+- **Linux**: Run `scripts/dropfix-nix.sh` in Bash
+- **macOS**: Run `scripts/dropfix-mac.sh` in Terminal
+
+### Python Package
+
+The Python scripts are now part of the `dropfix` package:
 
 #### Setting Ignored Directories
 
-- **All Platforms**: Run `dropfix.py` with Python 3
+- **Using the package**:
 
   ```bash
   # Basic usage (auto-detects Dropbox path)
-  python3 dropfix.py
+  python -m dropfix.dropfix
 
   # Dry run mode (shows what would happen without making changes)
-  python3 dropfix.py --dry-run
+  python -m dropfix.dropfix --dry-run
 
   # Specify custom Dropbox path
-  python3 dropfix.py --path /path/to/your/Dropbox
+  python -m dropfix.dropfix --path /path/to/your/Dropbox
 
   # Ignore specific directories
-  python3 dropfix.py --dirs .venv .cache node_modules
+  python -m dropfix.dropfix --dirs .venv .cache node_modules
   ```
 
 #### Checking Ignored Status
 
-- **All Platforms**: Run `dropfix-check.py` with Python 3
+- **Using the package**:
 
   ```bash
   # Check which directories are ignored (auto-detects Dropbox path)
-  python3 dropfix-check.py
+  python -m dropfix.dropfix-check
 
   # Show only ignored directories
-  python3 dropfix-check.py --show ignored
+  python -m dropfix.dropfix-check --show ignored
 
   # Show only not-ignored directories
-  python3 dropfix-check.py --show not-ignored
+  python -m dropfix.dropfix-check --show not-ignored
 
   # Specify custom directories to check
-  python3 dropfix-check.py --dirs .venv node_modules vendor
+  python -m dropfix.dropfix-check --dirs .venv node_modules vendor
   ```
 
 ## Why These Tools?
@@ -83,7 +87,7 @@ Remember to restart Dropbox for the changes to take effect.
 
 ## Note About Paths
 
-These scripts include hardcoded paths (`C:\Users\shane\Dropbox` for Windows and `$HOME/Dropbox` for macOS/Linux) for convenience. Before running, you may need to:
+The scripts in the `scripts/` directory include hardcoded paths (`C:\Users\shane\Dropbox` for Windows and `$HOME/Dropbox` for macOS/Linux) for convenience. Before running, you may need to:
 
 1. Open the script in a text editor
 2. Change the `$dropboxPath` variable to match your Dropbox location

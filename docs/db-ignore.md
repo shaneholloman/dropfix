@@ -43,7 +43,7 @@ echo -e ".venv\n.venv/**\n.conda\n.conda/**\nnode_modules\nnode_modules/**" > ~/
 
 ## Method 3: Setting Attributes on Individual Files/Directories
 
-These commands manually set the Dropbox ignore attribute and are the basis for our provided scripts.
+These commands manually set the Dropbox ignore attribute and are the basis for our provided scripts (located in the `scripts/` directory and `dropfix` package).
 
 ### Windows
 
@@ -100,3 +100,12 @@ The examples in this guide and the related scripts use hardcoded paths for simpl
 - Linux examples use `/home/username/Dropbox` or `~/Dropbox`
 
 These were originally created for personal use, so paths were hardcoded to avoid configuration steps. When using these commands or scripts, make sure to update the paths to match your specific Dropbox location.
+
+## Accessing the dropfix Tools
+
+- **Platform-specific scripts** are available in the `scripts/` directory
+- **Python implementation** is available in the `dropfix` package
+  - Use `python -m dropfix.dropfix` to run the directory ignore tool
+  - Use `python -m dropfix.dropfix-check` to check ignore status
+
+For detailed usage instructions, see the [main README](../README.md).
