@@ -1,6 +1,9 @@
-# Dropfix: Dropbox Directory Ignore Tools
+# ``dropfix``
 
-Dropfix helps you configure Dropbox to ignore specific development directories (`.venv`, `.conda`, `node_modules`) that don't need to be synced across machines.
+> [!TIP]
+> Dropbox Directory Ignore Tools
+
+`dropfix` helps you configure Dropbox to ignore specific development directories (`.venv`, `.conda`, `node_modules`) that don't need to be synced across machines.
 
 ## Quick Start
 
