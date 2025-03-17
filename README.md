@@ -1,4 +1,4 @@
-# ``dropfix``
+# `dropfix`
 
 > [!TIP]
 > Dropbox Directory Ignore Tools
@@ -13,7 +13,9 @@
 - **Linux**: Run `dropfix-nix.sh` in Bash
 - **macOS**: Run `dropfix-mac.sh` in Terminal
 
-### Cross-Platform Python Script
+### Cross-Platform Python Scripts
+
+#### Setting Ignored Directories
 
 - **All Platforms**: Run `dropfix.py` with Python 3
 
@@ -29,6 +31,24 @@
 
   # Ignore specific directories
   python3 dropfix.py --dirs .venv .cache node_modules
+  ```
+
+#### Checking Ignored Status
+
+- **All Platforms**: Run `dropfix-check.py` with Python 3
+
+  ```bash
+  # Check which directories are ignored (auto-detects Dropbox path)
+  python3 dropfix-check.py
+
+  # Show only ignored directories
+  python3 dropfix-check.py --show ignored
+
+  # Show only not-ignored directories
+  python3 dropfix-check.py --show not-ignored
+
+  # Specify custom directories to check
+  python3 dropfix-check.py --dirs .venv node_modules vendor
   ```
 
 ## Why These Tools?

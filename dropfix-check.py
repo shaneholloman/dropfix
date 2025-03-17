@@ -67,8 +67,10 @@ def check_directories(dropbox_path, dir_names, show_filter="all"):
     not_ignored_count = 0
     error_count = 0
 
+    # Track directories by name for grouping
+    dir_groups = {name: [] for name in dir_names}
+
     # Find all matching directories
-    all_matches = []
     for dir_name in dir_names:
         print(f"{CYAN}Searching for '{dir_name}' directories...{RESET}")
         matches = []
@@ -87,6 +89,11 @@ def check_directories(dropbox_path, dir_names, show_filter="all"):
             continue
 
         print(f"{GREEN}Found {len(matches)} '{dir_name}' directories.{RESET}\n")
+        dir_groups[dir_name].extend(matches)
+
+    # Combine all directories for processing
+    all_matches = []
+    for matches in dir_groups.values():
         all_matches.extend(matches)
 
     if not all_matches:
@@ -119,26 +126,80 @@ def check_directories(dropbox_path, dir_names, show_filter="all"):
             error_dirs.append(dir_path)
             error_count += 1
 
+    # Group ignored directories by name and parent-child relationships
+    ignored_by_name = {}
+    for d in ignored_dirs:
+        dir_name = d.name
+        if dir_name not in ignored_by_name:
+            ignored_by_name[dir_name] = []
+        ignored_by_name[dir_name].append(d)
+
     # Print results
     print("\n")  # Extra newline after progress bar
 
-    # Ignored directories
+    # Ignored directories - grouped and filtered
     if show_filter in ["all", "ignored"] and ignored_dirs:
         print(f"\n{GREEN}=== Directories ignored by Dropbox ({len(ignored_dirs)}) ==={RESET}\n")
-        for d in ignored_dirs:
-            print(f"{GREEN}✓ {d}{RESET}")
+
+        for dir_name, paths in ignored_by_name.items():
+            # Get organized hierarchy of directories
+            top_level_dirs, nested_counts = organize_directories(paths, dropbox_path)
+
+            # Show only top-level directories with nested counts
+            for top_dir in top_level_dirs:
+                nested_count = nested_counts.get(top_dir, 0)
+                if nested_count > 0:
+                    print(f"{GREEN}✓ {top_dir} {CYAN}(+{nested_count} nested ignored directories){RESET}")
+                else:
+                    print(f"{GREEN}✓ {top_dir}{RESET}")
 
     # Not ignored directories
     if show_filter in ["all", "not-ignored"] and not_ignored_dirs:
         print(f"\n{YELLOW}=== Directories NOT ignored by Dropbox ({len(not_ignored_dirs)}) ==={RESET}\n")
+
+        # Group not-ignored directories by name
+        not_ignored_by_name = {}
         for d in not_ignored_dirs:
-            print(f"{YELLOW}✗ {d}{RESET}")
+            dir_name = d.name
+            if dir_name not in not_ignored_by_name:
+                not_ignored_by_name[dir_name] = []
+            not_ignored_by_name[dir_name].append(d)
+
+        for dir_name, paths in not_ignored_by_name.items():
+            # Get organized hierarchy
+            top_level_dirs, nested_counts = organize_directories(paths, dropbox_path)
+
+            # Show only top-level directories with nested counts
+            for top_dir in top_level_dirs:
+                nested_count = nested_counts.get(top_dir, 0)
+                if nested_count > 0:
+                    print(f"{YELLOW}✗ {top_dir} {CYAN}(+{nested_count} nested non-ignored directories){RESET}")
+                else:
+                    print(f"{YELLOW}✗ {top_dir}{RESET}")
 
     # Errors
     if error_dirs:
         print(f"\n{RED}=== Directories with check errors ({len(error_dirs)}) ==={RESET}\n")
+
+        # Group error directories by name
+        error_by_name = {}
         for d in error_dirs:
-            print(f"{RED}! {d}{RESET}")
+            dir_name = d.name
+            if dir_name not in error_by_name:
+                error_by_name[dir_name] = []
+            error_by_name[dir_name].append(d)
+
+        for dir_name, paths in error_by_name.items():
+            # Get organized hierarchy
+            top_level_dirs, nested_counts = organize_directories(paths, dropbox_path)
+
+            # Show only top-level directories with nested counts
+            for top_dir in top_level_dirs:
+                nested_count = nested_counts.get(top_dir, 0)
+                if nested_count > 0:
+                    print(f"{RED}! {top_dir} {CYAN}(+{nested_count} nested error directories){RESET}")
+                else:
+                    print(f"{RED}! {top_dir}{RESET}")
 
     # Summary
     print(f"\n{CYAN}=== Summary ==={RESET}\n")
@@ -147,6 +208,55 @@ def check_directories(dropbox_path, dir_names, show_filter="all"):
     print(f"{YELLOW}Not ignored: {not_ignored_count}{RESET}")
     if error_count > 0:
         print(f"{RED}Check errors: {error_count}{RESET}")
+
+def organize_directories(paths, base_path):
+    """Organize directories into a hierarchy of parent-child relationships
+
+    Args:
+        paths: List of Path objects to organize
+        base_path: Base path to consider as root for relative paths
+
+    Returns:
+        tuple: (top_level_dirs, nested_counts)
+            - top_level_dirs: List of top-level directories
+            - nested_counts: Dict mapping top-level dirs to count of nested dirs
+    """
+    # Sort paths by depth (shortest paths first)
+    sorted_paths = sorted(paths, key=lambda p: len(str(p).split(os.sep)))
+
+    # Find top-level directories and count nested directories
+    top_level_dirs = []
+    nested_counts = {}
+    path_parents = {}
+
+    for path in sorted_paths:
+        # Check if this path is under any already processed path
+        is_nested = False
+        parent_path = None
+
+        # Convert to string for easier path operations
+        path_str = str(path)
+
+        for existing_path in top_level_dirs:
+            existing_str = str(existing_path)
+            # If this path starts with an existing path plus a separator, it's nested
+            if path_str.startswith(existing_str + os.sep):
+                is_nested = True
+                parent_path = existing_path
+                # Increment the nested count for the parent path
+                nested_counts[existing_path] += 1
+                break
+
+        if not is_nested:
+            # This is a top-level directory
+            top_level_dirs.append(path)
+            nested_counts[path] = 0
+
+        # Track the parent for this path
+        if parent_path:
+            path_parents[path] = parent_path
+
+    return top_level_dirs, nested_counts
 
 def check_if_ignored(path, system):
     """Check if a directory is ignored by Dropbox
