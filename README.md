@@ -7,9 +7,29 @@
 
 ## Quick Start
 
+### Platform-Specific Scripts
+
 - **Windows**: Run `dropfix-win.ps1` in PowerShell
 - **Linux**: Run `dropfix-nix.sh` in Bash
 - **macOS**: Run `dropfix-mac.sh` in Terminal
+
+### Cross-Platform Python Script
+
+- **All Platforms**: Run `dropfix.py` with Python 3
+
+  ```bash
+  # Basic usage (auto-detects Dropbox path)
+  python3 dropfix.py
+
+  # Dry run mode (shows what would happen without making changes)
+  python3 dropfix.py --dry-run
+
+  # Specify custom Dropbox path
+  python3 dropfix.py --path /path/to/your/Dropbox
+
+  # Ignore specific directories
+  python3 dropfix.py --dirs .venv .cache node_modules
+  ```
 
 ## Why These Tools?
 
