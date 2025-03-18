@@ -9,6 +9,8 @@ dropfix helps you configure Dropbox to ignore specific development directories (
 > This package isn't published yet, but will soon be installable with: `uv tool install dropfix`
 > after which you can simply run `dropfix` from anywhere.
 
+![Ignored by Dropbox](docs/assets/ignored-by-dropbox.png "Ignored by Dropbox")
+
 ## Quick Start
 
 ### All Operating Systems
