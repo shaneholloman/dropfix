@@ -108,4 +108,4 @@ These were originally created for personal use, so paths were hardcoded to avoid
   - Use `python -m dropfix.dropfix` to run the directory ignore tool
   - Use `python -m dropfix.dropfix-check` to check ignore status
 
-For detailed usage instructions, see the [main README](../README.md).
+For detailed usage instructions, see the main README.
