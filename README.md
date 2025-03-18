@@ -18,6 +18,9 @@ dropfix helps you configure Dropbox to ignore specific development directories (
 Run the Python script directly (works on Windows, macOS, and Linux):
 
 ```bash
+# Check which directories are ignored (auto-detects Dropbox path)
+uv run dropfix/dropfix-check.py
+
 # Basic usage (auto-detects Dropbox path)
 python dropfix/dropfix.py
 
