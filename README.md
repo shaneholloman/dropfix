@@ -5,55 +5,60 @@
 
 dropfix helps you configure Dropbox to ignore specific development directories (`.venv`, `.conda`, `node_modules`) that don't need to be synced across machines.
 
+> [!NOTE]
+> This package isn't published yet, but will soon be installable with: `uv tool install dropfix`
+> after which you can simply run `dropfix` from anywhere.
+
 ## Quick Start
 
-### Platform-Specific Scripts
+### All Operating Systems
 
-Located in the `scripts/` directory:
+Run the Python script directly (works on Windows, macOS, and Linux):
+
+```bash
+# Basic usage (auto-detects Dropbox path)
+python dropfix/dropfix.py
+
+# Dry run mode (shows what would happen without making changes)
+python dropfix/dropfix.py --dry-run
+
+# Specify custom Dropbox path
+python dropfix/dropfix.py --path /path/to/your/Dropbox
+
+# Ignore specific directories
+python dropfix/dropfix.py --dirs .venv .cache node_modules
+```
+
+Check which directories are being ignored:
+
+```bash
+# Check which directories are ignored (auto-detects Dropbox path)
+python dropfix/dropfix-check.py
+
+# Show only ignored directories
+python dropfix/dropfix-check.py --show ignored
+
+# Show only not-ignored directories
+python dropfix/dropfix-check.py --show not-ignored
+```
+
+### Platform-Specific Shell Scripts
+
+Alternatively, you can use the platform-specific scripts in the `scripts/` directory:
 
 - **Windows**: Run `scripts/dropfix-win.ps1` in PowerShell
 - **Linux**: Run `scripts/dropfix-nix.sh` in Bash
 - **macOS**: Run `scripts/dropfix-mac.sh` in Terminal
 
-### Python Package
+### Python Module Usage
 
-The Python scripts are now part of the `dropfix` package:
+If you install the package or run from the repo:
 
-#### Setting Ignored Directories
-
-- **Using the package**:
-
-  ```bash
-  # Basic usage (auto-detects Dropbox path)
-  python -m dropfix.dropfix
-
-  # Dry run mode (shows what would happen without making changes)
-  python -m dropfix.dropfix --dry-run
-
-  # Specify custom Dropbox path
-  python -m dropfix.dropfix --path /path/to/your/Dropbox
-
-  # Ignore specific directories
-  python -m dropfix.dropfix --dirs .venv .cache node_modules
-  ```
-
-#### Checking Ignored Status
-
-- **Using the package**:
-
-  ```bash
-  # Check which directories are ignored (auto-detects Dropbox path)
-  python -m dropfix.dropfix-check
-
-  # Show only ignored directories
-  python -m dropfix.dropfix-check --show ignored
-
-  # Show only not-ignored directories
-  python -m dropfix.dropfix-check --show not-ignored
-
-  # Specify custom directories to check
-  python -m dropfix.dropfix-check --dirs .venv node_modules vendor
-  ```
+```bash
+# Using Python module syntax
+python -m dropfix.dropfix
+python -m dropfix.dropfix-check
+```
 
 ## Why These Tools?
 
