@@ -1,0 +1,47 @@
+[project]
+name = "dropfix"
+version = "0.2.1"
+description = "dropfix helps you configure Dropbox to ignore specific development directories (`.venv`, `.conda`, `node_modules`) that don't need to be synced across machines."
+authors = [
+  { name = "Shane Holloman", email = "shaneholloman@gmail.com" },
+]
+readme = "README.md"
+keywords = ['python']
+requires-python = ">=3.10,<4.0"
+dependencies = [
+  "rich"
+]
+classifiers = [
+  "Intended Audience :: Developers",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://shaneholloman.github.io/dropfix/"
+Repository = "https://github.com/shaneholloman/dropfix"
+Documentation = "https://shaneholloman.github.io/dropfix/"
+
+[project.scripts]
+dropfix = "dropfix.dropfix:main"
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+    "ty",
+]
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+fix = true
